@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Five XKC-Y25-V sensors connected to an ESP32 through NPN level shifters</title>
+  <desc id="desc">Marine 12 volt supply feeds five sensors and a fused buck converter. Each yellow sensor output passes through a 22 kilohm resistor to a 2N3904 transistor. Each ESP32 input has a 10 kilohm pullup to 3.3 volts.</desc>
+  <style>
+    text { font-family: Arial, sans-serif; fill: #172033; }
+    .title { font-size: 28px; font-weight: 700; }
+    .label { font-size: 17px; }
+    .small { font-size: 14px; }
+    .box { fill: #f5f7fb; stroke: #253858; stroke-width: 2; rx: 12; }
+    .wire { fill: none; stroke-width: 4; }
+    .power { stroke: #b42318; }
+    .ground { stroke: #175cd3; }
+    .signal { stroke: #d49b00; }
+    .logic { stroke: #027a48; }
+  </style>
+  <text x="40" y="45" class="title">Sailboat black-water sensor wiring</text>
+  <rect x="40" y="80" width="220" height="120" class="box"/>
+  <text x="62" y="115" class="label">Boat 12 V DC</text>
+  <text x="62" y="148" class="small">+ → 1 A fuse</text>
+  <text x="62" y="178" class="small">− → common ground</text>
+  <rect x="350" y="80" width="240" height="120" class="box"/>
+  <text x="372" y="115" class="label">12 V → regulated 5 V</text>
+  <text x="372" y="148" class="small">Marine-rated buck converter</text>
+  <text x="372" y="178" class="small">5 V output → ESP32 5V pin</text>
+  <rect x="900" y="80" width="250" height="570" class="box"/>
+  <text x="930" y="115" class="label">ESP32-WROOM-32D</text>
+  <text x="930" y="145" class="small">38-pin DevKit + breakout</text>
+
+  <path d="M260 115 H350" class="wire power"/>
+  <path d="M260 170 H320 V690 H1110 V650" class="wire ground"/>
+  <path d="M590 115 H870 V175 H900" class="wire power"/>
+  <path d="M590 170 H840 V205 H900" class="wire ground"/>
+  <text x="800" y="166" class="small">5 V</text>
+  <text x="800" y="198" class="small">GND</text>
+
+  <path d="M280 240 H840" class="wire power"/>
+  <path d="M280 660 H840" class="wire ground"/>
+  <text x="42" y="246" class="small">Fused +12 V sensor bus</text>
+  <text x="42" y="666" class="small">Common ground bus</text>
+
+  <g transform="translate(40,275)">
+    <rect width="230" height="150" class="box"/>
+    <text x="18" y="30" class="label">XKC-Y25-V (×5)</text>
+    <text x="18" y="62" class="small">Brown → +12 V bus</text>
+    <text x="18" y="88" class="small">Blue → ground bus</text>
+    <text x="18" y="114" class="small">Black → isolate; no connection</text>
+    <text x="18" y="140" class="small">Yellow → one interface each</text>
+  </g>
+
+  <g transform="translate(350,275)">
+    <rect width="410" height="270" class="box"/>
+    <text x="20" y="32" class="label">Repeat this level-shifter circuit 5 times</text>
+    <text x="20" y="70" class="small">Sensor yellow</text>
+    <path d="M20 90 H115" class="wire signal"/>
+    <text x="50" y="82" class="small">22 kΩ</text>
+    <path d="M115 90 H190" class="wire signal"/>
+    <circle cx="210" cy="90" r="20" fill="#fff" stroke="#253858" stroke-width="2"/>
+    <text x="197" y="96" class="small">B</text>
+    <text x="180" y="130" class="small">2N3904</text>
+    <path d="M210 110 V215" class="wire ground"/>
+    <text x="220" y="205" class="small">E → GND</text>
+    <path d="M210 70 V45 H360" class="wire logic"/>
+    <text x="238" y="38" class="small">C → ESP32 GPIO</text>
+    <path d="M310 45 V0" class="wire power"/>
+    <text x="315" y="18" class="small">10 kΩ to 3.3 V</text>
+    <path d="M145 90 V215" class="wire ground"/>
+    <text x="38" y="238" class="small">100 kΩ from base to ground</text>
+    <text x="20" y="262" class="small">Wet = GPIO LOW • Dry = GPIO HIGH</text>
+  </g>
+
+  <path d="M760 320 H900" class="wire logic"/>
+  <path d="M760 370 H900" class="wire logic"/>
+  <path d="M760 420 H900" class="wire logic"/>
+  <path d="M760 470 H900" class="wire logic"/>
+  <path d="M760 520 H900" class="wire logic"/>
+  <text x="920" y="327" class="label">20% → GPIO 32</text>
+  <text x="920" y="377" class="label">40% → GPIO 33</text>
+  <text x="920" y="427" class="label">60% → GPIO 25</text>
+  <text x="920" y="477" class="label">80% → GPIO 26</text>
+  <text x="920" y="527" class="label">100% → GPIO 27</text>
+  <text x="40" y="725" class="label">Never connect a yellow sensor wire or boat 12 V directly to an ESP32 GPIO.</text>
+</svg>
