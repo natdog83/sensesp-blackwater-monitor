@@ -1,0 +1,22 @@
+name: Build firmware
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install PlatformIO
+        run: pip install platformio
+      - name: Run host-side logic tests
+        run: pio test -e native
+      - name: Build hardware-test firmware
+        run: pio run -e esp32dev-test
+      - name: Build production SensESP firmware
+        run: pio run -e esp32dev
