@@ -31,7 +31,7 @@ An invalid pattern still reports the highest wet point. That conservative behavi
 
 - One 38-pin ESP32-WROOM-32D development board with CP2102 USB interface.
 - Five genuine XKC-Y25-V high/low-output non-contact sensors.
-- One regulated, marine-suitable 12 V-to-5 V buck converter rated for at least 1 A continuous output.
+- One regulated, marine-suitable 12 V-to-5 V buck converter rated for at least 1 A continuous output and suitable for vessel electrical transients.
 - One 1 A inline fuse and holder, placed near the 12 V source.
 - Five 2N3904 NPN transistors.
 - Five 22 kΩ, five 100 kΩ, and five 10 kΩ resistors, 1/4 W or greater.
@@ -40,7 +40,7 @@ An invalid pattern still reports the highest wet point. That conservative behavi
 - Multimeter.
 - Laptop with Git and Visual Studio Code plus the PlatformIO extension, or PlatformIO Core.
 
-The discrete transistor interface is necessary because the XKC-Y25-V yellow output rises toward its 5–24 V supply. ESP32 GPIO is not 12 V-tolerant.
+The XKC-Y25-V datasheet specifies a 5–24 V supply, so do not power these sensors from the ESP32 `3V3` terminal. In this design, both the sensors and the ESP32 development board are powered in parallel from the regulated 5 V rail. The discrete transistor interface is still necessary because the yellow output can rise toward 5 V, while ESP32 GPIO is only 3.3 V logic and is not 5 V-tolerant.
 
 ## 3. Bench-wire one sensor channel
 
@@ -48,8 +48,8 @@ Keep boat power off while wiring.
 
 ### Sensor side
 
-1. Connect XKC brown to fused +12 V.
-2. Connect XKC blue to the 12 V negative/common ground.
+1. Connect XKC brown to the regulated +5 V sensor bus.
+2. Connect XKC blue to the common ground/negative bus.
 3. Leave XKC black disconnected and individually insulated. With black floating, the sensor yellow wire goes high when liquid is detected.
 4. Connect XKC yellow through a 22 kΩ resistor to the base of a 2N3904.
 5. Connect a 100 kΩ resistor from the transistor base to common ground.
@@ -77,17 +77,17 @@ The firmware intentionally avoids GPIO 0 and GPIO 2 used in the reference projec
 
 ## 4. Power arrangement
 
-For desk testing, power the ESP32 only through Micro-USB. The sensor can use a separate 12 V bench supply, but its negative must connect to ESP32 GND for the transistor interface.
+For desk testing, power the ESP32 only through Micro-USB. Power the sensor from a separate regulated 5 V bench supply, with the bench-supply negative connected to ESP32 GND for the transistor interface. Do not power the sensor from the ESP32 `3V3` terminal.
 
 For installation aboard:
 
-1. Run protected 12 V DC through a 1 A fuse located close to the source.
-2. Split the fused output to the five brown sensor wires and the input of the 12-to-5 V buck converter.
-3. Connect the buck converter's regulated 5 V output to the ESP32 `5V` terminal and its negative to ESP32 `GND`.
-4. Join sensor blue wires to the common negative bus.
-5. Before plugging in the ESP32, use a multimeter to confirm correct polarity and approximately 5.0 V at the converter output.
+1. Run protected boat 12 V DC through a 1 A fuse located close to the source and then to the input of the 12-to-5 V buck converter.
+2. Split the converter's regulated +5 V output into a small 5 V distribution bus.
+3. Connect that 5 V bus to the ESP32 `5V` terminal and to all five brown sensor wires. This powers the ESP32 board and sensors in parallel; the sensors are not powered through the ESP32's 3.3 V regulator.
+4. Connect the converter negative, ESP32 `GND`, and all five blue sensor wires to the common negative bus.
+5. Before connecting the ESP32 or sensors, use a multimeter to confirm correct polarity and approximately 5.0 V at the converter output and at the end of the sensor cable run.
 
-Do not feed boat 12 V into the ESP32 `5V`, `3V3`, or GPIO terminals. Do not power the board from USB and its 5 V terminal at the same time. A generic DevKit is suitable for prototyping; a permanent boat installation needs appropriate fusing, enclosure, corrosion protection, strain relief, and transient-resistant power conversion.
+Do not feed boat 12 V into any ESP32 terminal. Do not feed the regulated 5 V rail into `3V3` or a GPIO. Do not power the board from USB and its 5 V terminal at the same time unless the particular board has a documented power-path circuit that prevents backfeeding. A generic DevKit is suitable for prototyping; a permanent boat installation needs appropriate fusing, a sealed or splash-resistant enclosure, tinned conductors, adhesive-lined heat-shrink, corrosion protection, strain relief, and transient-resistant power conversion.
 
 ## 5. Download the repository
 
@@ -204,7 +204,7 @@ Then upload with `pio run -e esp32dev -t upload`. Remove or comment those lines 
 | No serial port | Charge-only cable or missing CP2102 driver | Try a known data cable, another port, then install the official driver |
 | Upload remains at `Connecting...` | Board did not enter download mode | Use the BOOT/EN sequence above |
 | Every channel reads wet | GPIOs held low, transistor pinout wrong, or wiring short | Disconnect yellow wires and inspect collector/emitter orientation |
-| Every real sensor reads dry | No 12 V sensor power, no common ground, or sensitivity too low | Measure brown-to-blue voltage and GPIO node voltage |
+| Every real sensor reads dry | No regulated 5 V sensor power, no common ground, or sensitivity too low | Measure brown-to-blue voltage and GPIO node voltage |
 | Wet/dry is reversed | Black MODE wire grounded or interface differs | Leave black floating and insulated; retain active-low interface |
 | `sensorPatternValid` is false | Upper wet sensor with a dry sensor below | Check bonding, wiring order, residue, and sensitivity |
 | Readings change while sailing | Sloshing or installation near inflow | Increase `kDebounceMs`, relocate sensors, or add physical damping |

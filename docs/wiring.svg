@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
   <title id="title">Five XKC-Y25-V sensors connected to an ESP32 through NPN level shifters</title>
-  <desc id="desc">Marine 12 volt supply feeds five sensors and a fused buck converter. Each yellow sensor output passes through a 22 kilohm resistor to a 2N3904 transistor. Each ESP32 input has a 10 kilohm pullup to 3.3 volts.</desc>
+  <desc id="desc">A fused marine 12 volt supply feeds a regulated 5 volt buck converter. Its 5 volt output powers the ESP32 and five sensors in parallel. Each yellow sensor output passes through a 22 kilohm resistor to a 2N3904 transistor. Each ESP32 input has a 10 kilohm pullup to 3.3 volts.</desc>
   <style>
     text { font-family: Arial, sans-serif; fill: #172033; }
     .title { font-size: 28px; font-weight: 700; }
@@ -27,21 +27,23 @@
   <text x="930" y="145" class="small">38-pin DevKit + breakout</text>
 
   <path d="M260 115 H350" class="wire power"/>
+  <text x="278" y="103" class="small">fused 12 V</text>
   <path d="M260 170 H320 V690 H1110 V650" class="wire ground"/>
   <path d="M590 115 H870 V175 H900" class="wire power"/>
   <path d="M590 170 H840 V205 H900" class="wire ground"/>
   <text x="800" y="166" class="small">5 V</text>
   <text x="800" y="198" class="small">GND</text>
 
+  <path d="M590 145 H800 V240 H280" class="wire power"/>
   <path d="M280 240 H840" class="wire power"/>
   <path d="M280 660 H840" class="wire ground"/>
-  <text x="42" y="246" class="small">Fused +12 V sensor bus</text>
+  <text x="42" y="246" class="small">Regulated +5 V bus: sensors and ESP32 in parallel</text>
   <text x="42" y="666" class="small">Common ground bus</text>
 
   <g transform="translate(40,275)">
     <rect width="230" height="150" class="box"/>
     <text x="18" y="30" class="label">XKC-Y25-V (×5)</text>
-    <text x="18" y="62" class="small">Brown → +12 V bus</text>
+    <text x="18" y="62" class="small">Brown → regulated +5 V bus</text>
     <text x="18" y="88" class="small">Blue → ground bus</text>
     <text x="18" y="114" class="small">Black → isolate; no connection</text>
     <text x="18" y="140" class="small">Yellow → one interface each</text>
@@ -78,5 +80,6 @@
   <text x="920" y="427" class="label">60% → GPIO 25</text>
   <text x="920" y="477" class="label">80% → GPIO 26</text>
   <text x="920" y="527" class="label">100% → GPIO 27</text>
-  <text x="40" y="725" class="label">Never connect a yellow sensor wire or boat 12 V directly to an ESP32 GPIO.</text>
+  <text x="40" y="705" class="label">Do not power sensors from ESP32 3V3. Never connect yellow or boat 12 V directly to GPIO.</text>
+  <text x="40" y="735" class="small">Before connection, verify approximately 5.0 V and correct polarity at the ESP32 and at the sensor cable run.</text>
 </svg>
